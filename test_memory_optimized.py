@@ -17,6 +17,7 @@ import models.optimized.word_language_model_new as wlm_optim
 
 class TestMemoryOptimized(unittest.TestCase):
 
+    @unittest.skip
     def test_densenet_optim(self):
         N = 32
         # N = 72
@@ -68,8 +69,8 @@ class TestMemoryOptimized(unittest.TestCase):
     def test_resnet_optim(self):
         N = 32
         # N = 51
-        total_iters = 20    # (warmup + benchmark)
-        iterations = 1
+        total_iters = 5    # (warmup + benchmark)
+        iterations = 4
         chunks = 6
 
         target = torch.ones(N).type("torch.LongTensor")
@@ -108,9 +109,9 @@ class TestMemoryOptimized(unittest.TestCase):
                 end_cpu = time.time()
                 end.record()
                 torch.cuda.synchronize()
-                gpu_msec = start.elapsed_time(end)
-                print("Optimized resnet ({:2d}): ({:8.3f} usecs gpu) ({:8.3f} usecs cpu)".format(
-                    i, gpu_msec * 1000, (end_cpu - start_cpu) * 1000000,
+                gpu_msec = start.elapsed_time(end)/1000
+                print("Optimized resnet ({:2d}): ({:8.3f} msecs gpu) ({:8.3f} usecs cpu)".format(
+                    i, gpu_msec * 1000, (end_cpu - start_cpu) * 1000,
                     file=sys.stderr))
 
     def weights_init(self, m):
@@ -118,7 +119,8 @@ class TestMemoryOptimized(unittest.TestCase):
         if classname.find('Conv3d') != -1:
             nn.init.kaiming_normal(m.weight)
             m.bias.data.zero_()
-
+    
+    @unittest.skip
     def test_vnet_optim(self):
         # optimized
         N = 8
@@ -177,6 +179,7 @@ class TestMemoryOptimized(unittest.TestCase):
         else:
             return tuple(self.repackage_hidden(v) for v in h)
 
+    @unittest.skip
     def test_wlm_optim(self):
         total_iters = 20
         iterations = 1

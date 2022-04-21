@@ -3,7 +3,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable, Function
 # from torch.utils.checkpoint import checkpoint, checkpoint_sequential
-import torch.utils.checkpoint_new as checkpoint_new
 import pdb
 
 def passthrough(x, **kwargs):

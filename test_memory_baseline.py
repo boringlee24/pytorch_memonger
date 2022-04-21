@@ -16,6 +16,7 @@ import models.baseline.vnet as vnet_baseline
 
 class TestMemoryBaseline(unittest.TestCase):
 
+    @unittest.skip
     def test_densenet_baseline(self):
         N = 32
         total_iters = 20    # (warmup + benchmark)
@@ -62,7 +63,7 @@ class TestMemoryBaseline(unittest.TestCase):
                     file=sys.stderr))
 
     def test_resnet_baseline(self):
-        N = 8
+        N = 32
         total_iters = 5    # (warmup + benchmark)
         iterations = 4
 
@@ -102,9 +103,9 @@ class TestMemoryBaseline(unittest.TestCase):
                 end_cpu = time.time()
                 end.record()
                 torch.cuda.synchronize()
-                gpu_msec = start.elapsed_time(end)
+                gpu_msec = start.elapsed_time(end)/1000
                 print("Baseline resnet ({:2d}): ({:8.3f} usecs gpu) ({:8.3f} usecs cpu)".format(
-                    i, gpu_msec * 1000, (end_cpu - start_cpu) * 1000000,
+                    i, gpu_msec * 1000, (end_cpu - start_cpu) * 1000,
                     file=sys.stderr))
 
     def weights_init(self, m):
@@ -113,6 +114,7 @@ class TestMemoryBaseline(unittest.TestCase):
             nn.init.kaiming_normal(m.weight)
             m.bias.data.zero_()
 
+    @unittest.skip
     def test_vnet_baseline(self):
         N = 4
         total_iters = 10    # (warmup + benchmark)
@@ -165,6 +167,7 @@ class TestMemoryBaseline(unittest.TestCase):
         else:
             return tuple(self.repackage_hidden(v) for v in h)
 
+    @unittest.skip
     def test_wlm_baseline(self):
         total_iters = 2
         iterations = 10
