@@ -288,9 +288,11 @@ def resnet101(pretrained=False, **kwargs):
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
-    model = ResNet(Bottleneck, [3, 4, 23, 3], **kwargs)
-    if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['resnet101']))
+    model = PreActResNet(PreActBottleneck, [3, 4, 23, 3], **kwargs)
+
+#    model = ResNet(Bottleneck, [3, 4, 23, 3], **kwargs)
+#    if pretrained:
+#        model.load_state_dict(model_zoo.load_url(model_urls['resnet101']))
     return model
 
 

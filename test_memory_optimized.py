@@ -67,11 +67,11 @@ class TestMemoryOptimized(unittest.TestCase):
                     file=sys.stderr))
 
     def test_resnet_optim(self):
-        N = 32
+        N = 16
         # N = 51
         total_iters = 5    # (warmup + benchmark)
         iterations = 4
-        chunks = 6
+        chunks =20
 
         target = torch.ones(N).type("torch.LongTensor")
         # x = torch.ones(N, 3, 224, 224, requires_grad=True)

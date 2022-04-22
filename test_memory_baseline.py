@@ -63,7 +63,7 @@ class TestMemoryBaseline(unittest.TestCase):
                     file=sys.stderr))
 
     def test_resnet_baseline(self):
-        N = 32
+        N = 16
         total_iters = 5    # (warmup + benchmark)
         iterations = 4
 
@@ -71,7 +71,7 @@ class TestMemoryBaseline(unittest.TestCase):
         # x = Variable(torch.randn(N, 3, 224, 224).fill_(1.0), requires_grad=True)
         x = Variable(torch.randn(N, 3, 32, 32).fill_(1.0), requires_grad=True)
         # model = resnet_baseline.resnet200()
-        # model = resnet_baseline.resnet101()
+#        model = resnet_baseline.resnet101()
         # model = resnet_baseline.resnet50()
         model = resnet_baseline.resnet1001()
 
