@@ -24,7 +24,8 @@ def resnet101(pretrained=False, **kwargs):
     return model
 
 def resnet152(pretrained=False, **kwargs):
-    model = ResNet(Bottleneck, [3, 8, 36, 3], **kwargs)
+#    model = ResNet(Bottleneck, [3, 8, 36, 3], **kwargs)
+    model = PreActResNet(PreActBottleneck, [3, 8, 36, 3], **kwargs)
     return model
 
 def resnet200(pretrained=False, **kwargs):

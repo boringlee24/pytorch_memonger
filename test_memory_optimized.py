@@ -21,9 +21,9 @@ class TestMemoryOptimized(unittest.TestCase):
     def test_densenet_optim(self):
         N = 32
         # N = 72
-        chunks = 4
-        total_iters = 20    # (warmup + benchmark)
-        iterations = 1
+        chunks = 10
+        total_iters = 5    # (warmup + benchmark)
+        iterations = 4
 
         x = torch.ones(N, 3, 224, 224, requires_grad=True)
         target = torch.ones(N).type("torch.LongTensor")
@@ -61,25 +61,27 @@ class TestMemoryOptimized(unittest.TestCase):
                 end_cpu = time.time()
                 end.record()
                 torch.cuda.synchronize()
-                gpu_msec = start.elapsed_time(end)
+                gpu_msec = start.elapsed_time(end) / 1000
                 print("Optimized densenet ({:2d}): ({:8.3f} usecs gpu) ({:8.3f} usecs cpu)".format(
-                    i, gpu_msec * 1000, (end_cpu - start_cpu) * 1000000,
+                    i, gpu_msec * 1000, (end_cpu - start_cpu) * 1000,
                     file=sys.stderr))
 
+    @unittest.skip
     def test_resnet_optim(self):
-        N = 16
+        N = 128
         # N = 51
         total_iters = 5    # (warmup + benchmark)
         iterations = 4
-        chunks =20
+        chunks = 6 #TODO
 
         target = torch.ones(N).type("torch.LongTensor")
         # x = torch.ones(N, 3, 224, 224, requires_grad=True)
         x = torch.ones(N, 3, 32, 32, requires_grad=True)
+        model = resnet_optim.resnet152()
         # model = resnet_optim.resnet200()
         # model = resnet_optim.resnet101()
         # model = resnet_optim.resnet50()
-        model = resnet_optim.resnet1001()
+#        model = resnet_optim.resnet1001()
 
         # switch the model to train mode
         model.train()
@@ -119,13 +121,13 @@ class TestMemoryOptimized(unittest.TestCase):
         if classname.find('Conv3d') != -1:
             nn.init.kaiming_normal(m.weight)
             m.bias.data.zero_()
-    
-    @unittest.skip
+
+#    @unittest.skip   
     def test_vnet_optim(self):
         # optimized
-        N = 8
-        total_iters = 20    # (warmup + benchmark)
-        iterations = 1
+        N = 4
+        total_iters = 5    # (warmup + benchmark)
+        iterations = 4
 
         # baseline
         # N = 4
@@ -167,9 +169,9 @@ class TestMemoryOptimized(unittest.TestCase):
                 end_cpu = time.time()
                 end.record()
                 torch.cuda.synchronize()
-                gpu_msec = start.elapsed_time(end)
+                gpu_msec = start.elapsed_time(end) / 1000
                 print("Optimized vnet ({:2d}): ({:8.3f} usecs gpu) ({:8.3f} usecs cpu)".format(
-                    i, gpu_msec * 1000, (end_cpu - start_cpu) * 1000000,
+                    i, gpu_msec * 1000, (end_cpu - start_cpu) * 1000,
                     file=sys.stderr))
 
     def repackage_hidden(self, h):
@@ -181,8 +183,8 @@ class TestMemoryOptimized(unittest.TestCase):
 
     @unittest.skip
     def test_wlm_optim(self):
-        total_iters = 20
-        iterations = 1
+        total_iters = 5
+        iterations = 4
         chunks = 4
 
         model_name = 'LSTM'
@@ -221,9 +223,9 @@ class TestMemoryOptimized(unittest.TestCase):
                 end_cpu = time.time()
                 end.record()
                 torch.cuda.synchronize()
-                gpu_msec = start.elapsed_time(end)
-                print("Optimized WLM ({:2d}): ({:8.3f} usecs gpu) ({:8.3f} usecs cpu)".format(
-                    i, gpu_msec * 1000, (end_cpu - start_cpu) * 1000000,
+                gpu_msec = start.elapsed_time(end) / 1000
+                print("Optimized WLM ({:2d}): ({:8.3f} msecs gpu) ({:8.3f} msecs cpu)".format(
+                    i, gpu_msec * 1000, (end_cpu - start_cpu) * 1000,
                     file=sys.stderr))
 
 

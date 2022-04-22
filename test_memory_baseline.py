@@ -19,8 +19,8 @@ class TestMemoryBaseline(unittest.TestCase):
     @unittest.skip
     def test_densenet_baseline(self):
         N = 32
-        total_iters = 20    # (warmup + benchmark)
-        iterations = 1
+        total_iters = 5    # (warmup + benchmark)
+        iterations = 4
 
         x = Variable(torch.randn(N, 3, 224, 224).fill_(1.0), requires_grad=True)
         target = Variable(torch.randn(N).fill_(1)).type("torch.LongTensor")
@@ -57,23 +57,24 @@ class TestMemoryBaseline(unittest.TestCase):
                 end_cpu = time.time()
                 end.record()
                 torch.cuda.synchronize()
-                gpu_msec = start.elapsed_time(end)
+                gpu_msec = start.elapsed_time(end) / 1000
                 print("Baseline densenet ({:2d}): ({:8.3f} usecs gpu) ({:8.3f} usecs cpu)".format(
-                    i, gpu_msec * 1000, (end_cpu - start_cpu) * 1000000,
+                    i, gpu_msec * 1000, (end_cpu - start_cpu) * 1000,
                     file=sys.stderr))
 
+    @unittest.skip
     def test_resnet_baseline(self):
-        N = 16
+        N = 128
         total_iters = 5    # (warmup + benchmark)
         iterations = 4
 
         target = Variable(torch.randn(N).fill_(1)).type("torch.LongTensor")
         # x = Variable(torch.randn(N, 3, 224, 224).fill_(1.0), requires_grad=True)
         x = Variable(torch.randn(N, 3, 32, 32).fill_(1.0), requires_grad=True)
-        # model = resnet_baseline.resnet200()
+        model = resnet_baseline.resnet152()
 #        model = resnet_baseline.resnet101()
-        # model = resnet_baseline.resnet50()
-        model = resnet_baseline.resnet1001()
+#        model = resnet_baseline.resnet50()
+#        model = resnet_baseline.resnet1001()
 
         # switch the model to train mode
         model.train()
@@ -103,7 +104,7 @@ class TestMemoryBaseline(unittest.TestCase):
                 end_cpu = time.time()
                 end.record()
                 torch.cuda.synchronize()
-                gpu_msec = start.elapsed_time(end)/1000
+                gpu_msec = start.elapsed_time(end) / 1000
                 print("Baseline resnet ({:2d}): ({:8.3f} usecs gpu) ({:8.3f} usecs cpu)".format(
                     i, gpu_msec * 1000, (end_cpu - start_cpu) * 1000,
                     file=sys.stderr))
@@ -114,11 +115,11 @@ class TestMemoryBaseline(unittest.TestCase):
             nn.init.kaiming_normal(m.weight)
             m.bias.data.zero_()
 
-    @unittest.skip
+#    @unittest.skip
     def test_vnet_baseline(self):
         N = 4
-        total_iters = 10    # (warmup + benchmark)
-        iterations = 2
+        total_iters = 5    # (warmup + benchmark)
+        iterations = 4
 
         target = Variable(torch.randn(N, 1, 128, 128, 64).fill_(1)).type("torch.LongTensor")
         x = Variable(torch.randn(N, 1, 128, 128, 64).fill_(1.0), requires_grad=True)
@@ -155,9 +156,9 @@ class TestMemoryBaseline(unittest.TestCase):
                 end_cpu = time.time()
                 end.record()
                 torch.cuda.synchronize()
-                gpu_msec = start.elapsed_time(end)
+                gpu_msec = start.elapsed_time(end) / 1000
                 print("Baseline vnet ({:2d}): ({:8.3f} usecs gpu) ({:8.3f} usecs cpu)".format(
-                    i, gpu_msec * 1000, (end_cpu - start_cpu) * 1000000,
+                    i, gpu_msec * 1000, (end_cpu - start_cpu) * 1000,
                     file=sys.stderr))
 
     def repackage_hidden(self, h):
@@ -169,8 +170,8 @@ class TestMemoryBaseline(unittest.TestCase):
 
     @unittest.skip
     def test_wlm_baseline(self):
-        total_iters = 2
-        iterations = 10
+        total_iters = 5
+        iterations = 4
 
         model_name = 'LSTM'
         ntokens = 33278
@@ -209,9 +210,9 @@ class TestMemoryBaseline(unittest.TestCase):
                 end_cpu = time.time()
                 end.record()
                 torch.cuda.synchronize()
-                gpu_msec = start.elapsed_time(end)
+                gpu_msec = start.elapsed_time(end) / 1000
                 print("Baseline WLM ({:2d}): ({:8.3f} usecs gpu) ({:8.3f} usecs cpu)".format(
-                    i, gpu_msec * 1000, (end_cpu - start_cpu) * 1000000,
+                    i, gpu_msec * 1000, (end_cpu - start_cpu) * 1000,
                     file=sys.stderr))
 
 
